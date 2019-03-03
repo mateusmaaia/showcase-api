@@ -16,4 +16,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/
 FROM scratch
 COPY --from=building-environment /go/bin/showcase-api /go/bin/showcase-api
 RUN apk add --update --no-cache ca-certificates git
+
+EXPOSE 8090
 ENTRYPOINT ["/go/bin/showcase-api"]

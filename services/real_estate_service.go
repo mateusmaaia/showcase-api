@@ -6,7 +6,7 @@ import (
 )
 
 type RealEstateService struct {
-	realEstateRepository repositories.RealEstateRepository
+	RealEstateRepository repositories.RealEstateRepository
 }
 
 func (r *RealEstateService) Insert(realEstate domains.RealEstate) {
@@ -19,15 +19,14 @@ func (r *RealEstateService) Insert(realEstate domains.RealEstate) {
 	storeNames := realEstate.DefineStoreNames()
 
 	for _, store := range storeNames {
-		r.realEstateRepository.Insert(store, realEstate)
+		r.RealEstateRepository.Insert(store, realEstate)
 	}
 }
 
 func (r *RealEstateService) FindByStore(storeName string, pageSize int, offset int) []domains.RealEstate {
-	return r.realEstateRepository.FindByStore(storeName, pageSize, offset)
+	return r.RealEstateRepository.FindByStore(storeName, pageSize, offset)
 }
 
-
 func (r *RealEstateService) CountByStore(storeName string) int {
-	return r.realEstateRepository.CountByStore(storeName)
+	return r.RealEstateRepository.CountByStore(storeName)
 }

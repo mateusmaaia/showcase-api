@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/mateusmaaia/showcase-api/domains"
+	"github.com/mateusmaaia/showcase-api/infrastructure/exceptions"
 )
 
 type Seed struct {
