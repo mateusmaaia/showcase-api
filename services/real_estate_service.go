@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/mateusmaaia/showcase-api/domains"
 	"github.com/mateusmaaia/showcase-api/repositories"
 )
@@ -15,7 +17,7 @@ func (r *RealEstateService) Insert(realEstate domains.RealEstate) {
 	if err != nil {
 		return
 	}
-
+	fmt.Printf("RealEstate [%v]", realEstate.ID)
 	storeNames := realEstate.DefineStoreNames()
 
 	for _, store := range storeNames {
@@ -23,8 +25,8 @@ func (r *RealEstateService) Insert(realEstate domains.RealEstate) {
 	}
 }
 
-func (r *RealEstateService) FindByStore(storeName string, pageSize int, offset int) []domains.RealEstate {
-	return r.RealEstateRepository.FindByStore(storeName, pageSize, offset)
+func (r *RealEstateService) FindByStore(storeName string, pageSize int, pageNumber int) ([]domains.RealEstate, int) {
+	return r.RealEstateRepository.FindByStore(storeName, pageSize, pageNumber)
 }
 
 func (r *RealEstateService) CountByStore(storeName string) int {

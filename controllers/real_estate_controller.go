@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mateusmaaia/showcase-api/api/responses"
@@ -15,12 +14,12 @@ type RealEstateController struct {
 
 func (r *RealEstateController) Get(ctx *gin.Context) {
 	store := ctx.Param("store")
-	pageSize, _ := strconv.Atoi(ctx.Param("pageSize"))
-	pageNumber, _ := strconv.Atoi(ctx.Param("pageNumber"))
-	realEstates := r.RealEstateService.FindByStore(store, pageSize, pageSize*pageNumber)
+	pageSize := ctx.GetInt("pageSize")
+	pageNumber := ctx.GetInt("pageNumber")
+	realEstates, end := r.RealEstateService.FindByStore(store, pageSize, pageNumber)
 	total := r.RealEstateService.CountByStore(store)
 
-	realEstatesResponse := &responses.RealEstateResponse{PageSize: pageSize,
+	realEstatesResponse := &responses.RealEstateResponse{PageSize: end,
 		PageNumber: pageNumber,
 		TotalCount: total,
 		Listings:   realEstates,

@@ -29,7 +29,6 @@ func seedRepositories(realEstateService services.RealEstateService) {
 	sourceURL := os.Getenv("S3_BUCKET")
 	seed := &infrastructure.Seed{SourceURL: sourceURL}
 	realEstates, err := seed.Import()
-
 	if err != nil {
 		panic(err)
 	}

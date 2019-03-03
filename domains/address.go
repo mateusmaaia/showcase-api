@@ -10,8 +10,8 @@ const (
 )
 
 type Location struct {
-	Lon int `json:"lon"`
-	Lat int `json:"lat"`
+	Lon float64 `json:"lon"`
+	Lat float64 `json:"lat"`
 }
 
 type GeoLocation struct {
@@ -35,7 +35,5 @@ func (l *Location) IsLocationValid() error {
 }
 
 func (l *Location) ItsNextToZapGroup() bool {
-	var lat float64 = float64(l.Lat)
-	var lon float64 = float64(l.Lon)
-	return lat >= zapGroupMinLat && lat <= zapGroupMaxLat && lon >= zapGroupMinLon && lon <= zapGroupMaxLon
+	return l.Lat >= zapGroupMinLat && l.Lat <= zapGroupMaxLat && l.Lon >= zapGroupMinLon && l.Lon <= zapGroupMaxLon
 }
