@@ -32,8 +32,15 @@ docker run -p 8090:8090 --name=[container_name] -d  [image_name]
 
 ## Usage
 
-We have one main endpoint to retrieve real estates information:
+We have one main endpoint to retrieve real estates information and a health check:
 
+### Health Check
+`GET /healthcheck`
+```JSON
+"All engines running. Liftoff!"
+```
+
+### Real Estates
 `GET /real-estates/[venture]?pageSize=[N]&pageNumber=[N]`
 
 As you can see, we have 3 variables:
