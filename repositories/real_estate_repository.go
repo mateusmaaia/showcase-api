@@ -19,16 +19,21 @@ func (r *RealEstateRepository) Insert(store string, realEstate domains.RealEstat
 
 func (r *RealEstateRepository) FindByStore(store string, pageSize int, pageNumber int) ([]domains.RealEstate, int) {
 	realEstates := r.StoreRealEstates[store]
-	total := r.CountByStore(store)
-	start := (pageNumber-1)*pageSize + 1
+	total := float64(r.CountByStore(store))
+	start := float64((pageNumber-1)*pageSize + 1)
 
-	end := math.Min(float64(start+pageSize), float64(total))
+	end := math.Min(start+float64(pageSize), total)
 
-	if start > total {
+	if float64(start) > total {
 		return realEstates[0:0], 0
 	}
 
-	realEstates = realEstates[start-1 : int(end)]
+	if end > (total - start) {
+		realEstates = realEstates[int(start)-1 : int(end)]
+	} else {
+		realEstates = realEstates[int(start)-1 : int(end)-1]
+	}
+
 	return realEstates, len(realEstates)
 
 }

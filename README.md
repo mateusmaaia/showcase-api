@@ -35,7 +35,7 @@ docker run -p 8090:8090 --name=[container_name] -d  [image_name]
 We have one main endpoint to retrieve real estates information and a health check:
 
 ### Health Check
-`GET /healthcheck`
+`GET /health`
 ```JSON
 "All engines running. Liftoff!"
 ```
@@ -58,10 +58,10 @@ Each request have a metadata and our response for real estates will be inside li
 "listings": [...]
 ```
 ### To Do
-- [x] Coding the challenge
-- [x] Documentation
+- [X] Coding the challenge
+- [X] Documentation
 - [ ] Writing tests
-- [ ] Fixing docker image
+- [X] Fixing docker image
 
 
 
