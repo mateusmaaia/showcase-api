@@ -30,6 +30,15 @@ Run to start a container with your image:
 docker run -p 8090:8090 --name=[container_name] -d  [image_name]
 ```
 
+## Tests
+
+To run tests just run:
+```bash
+go test ./... -cover
+```
+
+_I highly encourage running the tests on CICD pipeline_
+
 ## Usage
 
 We have one main endpoint to retrieve real estates information and a health check:

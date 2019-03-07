@@ -1,0 +1,18 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${fileDirname}",
+			"env": {},
+			"args": []
+		}
+	]
+}
+
+// nao dá pra debugar essa merda com live share queria pegar em execução o bagulho, quer pegar o projeto? e ai vc faz o live share, ai acho qeu vc consegue debugar
+// pode ser.. é que eu só queria debugar pra já pegar o objeto preenchido
+// posso fazer
