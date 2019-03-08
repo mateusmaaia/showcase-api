@@ -49,8 +49,9 @@ func (r *RealEstate) DefineStoreNames() []string {
 	rentalTotalPrice, _ := strconv.ParseFloat(r.PricingInfos.RentalTotalPrice, 64)
 	price, _ := strconv.ParseFloat(r.PricingInfos.Price, 64)
 
-	var zapMaxRentalPrice float64 = 3500
+	var zapMinRentalPrice float64 = 3500
 	var zapMinSalePrice float64 = 600000
+	var zapMinSquareMeterPrice float64 = 3500
 
 	var vivaRealMaxRentalPrice float64 = 4000
 	var vivaRealMaxSalePrice float64 = 700000
@@ -58,19 +59,20 @@ func (r *RealEstate) DefineStoreNames() []string {
 	if r.Address.GeoLocation.Location.ItsNextToZapGroup() {
 		zapMinSalePrice = zapMinSalePrice * 0.9
 		vivaRealMaxRentalPrice = vivaRealMaxRentalPrice * 1.5
+		zapMinSquareMeterPrice = zapMinSquareMeterPrice * 0.9
 	}
 
 	if r.PricingInfos.BusinessType == "RENTAL" {
 
-		if rentalTotalPrice > zapMaxRentalPrice {
+		if rentalTotalPrice >= zapMinRentalPrice {
 			storeNames = append(storeNames, StoreName.Zap)
 		}
 
-		if rentalTotalPrice < vivaRealMaxRentalPrice {
+		if rentalTotalPrice <= vivaRealMaxRentalPrice {
 			monthlyCondomFee, err := strconv.Atoi(r.PricingInfos.MonthlyCondoFee)
-			var maxMonthlyCondomFee float64 = rentalTotalPrice * 0.3
+			var maxMonthlyCondomFee float64 = price * 0.3
 
-			if err != nil || monthlyCondomFee > 0 && float64(monthlyCondomFee) < maxMonthlyCondomFee {
+			if err != nil || float64(monthlyCondomFee) < maxMonthlyCondomFee {
 				storeNames = append(storeNames, StoreName.VivaReal)
 			}
 		}
@@ -79,7 +81,17 @@ func (r *RealEstate) DefineStoreNames() []string {
 
 	if r.PricingInfos.BusinessType == "SALE" {
 		if price >= zapMinSalePrice {
-			if r.UsableAreas == 0 || r.UsableAreas > 3500 {
+			var usableAreas float64 = float64(r.UsableAreas)
+
+			if usableAreas > 0 {
+				var meterPrice float64 = price / usableAreas
+
+				if meterPrice > zapMinSquareMeterPrice {
+					storeNames = append(storeNames, StoreName.Zap)
+				}
+			}
+
+			if usableAreas == 0 {
 				storeNames = append(storeNames, StoreName.Zap)
 			}
 		}
