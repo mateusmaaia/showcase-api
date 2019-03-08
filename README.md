@@ -66,11 +66,6 @@ Each request have a metadata and our response for real estates will be inside li
 "totalCount":977,
 "listings": [...]
 ```
-### To Do
-- [X] Coding the challenge
-- [X] Documentation
-- [ ] Writing tests
-- [X] Fixing docker image
 
 
 
