@@ -36,6 +36,7 @@ To run tests just run:
 ```bash
 go test ./... -cover
 ```
+PS: On those scripts I focused on testing all the business rules (100% coverage), not considering some side tests.
 
 _I highly encourage running the tests on CICD pipeline_
 
