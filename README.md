@@ -54,9 +54,9 @@ We have one main endpoint to retrieve real estates information and a health chec
 
 As you can see, we have 3 variables:
 
-- __Venture__: That can be: **zap** or **viva-real**
-- __PageNumber__: That is an integer
-- __PageSize__: That is an integer
+- __[Required] Venture__: That can be: **zap** or **viva-real**
+- __[Optional] PageNumber__: That is an integer / **Standard value: 1**
+- __[Optional] PageSize__: That is an integer / **Standard value: 50**
 
 Each request have a metadata and our response for real estates will be inside listings, as you can se below:
 
