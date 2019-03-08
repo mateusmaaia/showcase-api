@@ -1,4 +1,14 @@
 # Showcase-api
+![Quality Gate Status](https://svgshare.com/i/Bde.svg)  
+![Maintainability Rating](https://svgshare.com/i/Bdu.svg)
+![Security Rating](https://svgshare.com/i/Beo.svg)
+![Reliability](https://svgshare.com/i/Bez.svg)
+![Lines of Code](https://svgshare.com/i/Bdv.svg)
+![Bugs](https://svgshare.com/i/Beg.svg)
+![Technical Debt](https://svgshare.com/i/Bdw.svg)
+![Duplicated Lines](https://svgshare.com/i/BeL.svg)
+![Vulnerability](https://svgshare.com/i/Bdf.svg)
+![Code Smells](https://svgshare.com/i/Bep.svg)
 
 Showcase-api is an Go RESTful Api for dealing with sale and rent of real estates of multiple ventures.
 
@@ -30,7 +40,7 @@ Run to start a container with your image:
 docker run -p 8090:8090 --name=[container_name] -d  [image_name]
 ```
 
-## Tests
+## <a name="tests"></a>Tests
 
 To run tests just run:
 ```bash
@@ -67,6 +77,13 @@ Each request have a metadata and our response for real estates will be inside li
 "totalCount":977,
 "listings": [...]
 ```
+
+### SonarQube
+I used SonarQube to get some statistics, unfortunely I don't have a servidor to use the live images, so I exported on a SVG Online share and added here. 
+
+Anyway, I uploaded here the configurations that I Used, so you can check the statistics. 
+
+Other problem that I got was to get test coverage, so I didn't uploaded that statistics :(, you can check using [Tests](#tests) command
 
 
 
