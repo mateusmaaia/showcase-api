@@ -1,9 +1,8 @@
 # Showcase-api
-![Quality Gate Status](https://svgshare.com/i/Bde.svg)  
+![Quality Gate Status](https://svgshare.com/i/Bde.svg)
 ![Maintainability Rating](https://svgshare.com/i/Bdu.svg)
 ![Security Rating](https://svgshare.com/i/Beo.svg)
 ![Reliability](https://svgshare.com/i/Bez.svg)
-![Lines of Code](https://svgshare.com/i/Bdv.svg)
 ![Bugs](https://svgshare.com/i/Beg.svg)
 ![Technical Debt](https://svgshare.com/i/Bdw.svg)
 ![Duplicated Lines](https://svgshare.com/i/BeL.svg)
