@@ -7,7 +7,7 @@ import (
 )
 
 func TestImportOK(t *testing.T) {
-	sourceURL := "http://grupozap-code-challenge.s3-website-us-east-1.amazonaws.com/sources/source-2.json"
+	sourceURL := "https://showcase-api-beea4.firebaseapp.com/source.json"
 	seed := &Seed{SourceURL: sourceURL}
 	realEstates, _ := seed.Import()
 	assert.NotEmpty(t, realEstates)
