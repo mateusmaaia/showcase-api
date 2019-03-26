@@ -15,10 +15,10 @@ func TestLocation(t *testing.T) {
 		lon float64
 		expected error
 	}{
-		{"GeoLocationWithLonAndLatEqualZero_Error", 0, 0,  &exceptions.InvalidLocationError{}},
-		{"GeoLocationWithLonAndLatNotZero_Nil", -23.502555, -46.716542,nil},
-		{"GeoLocationWithOnlyLonEqualZero_Nil", -23.502555, 0,nil},
-		{"GeoLocationWithOnlyLonEqualZero_Nil", 0, -46.716542,nil},
+		{"GeoLocationWithLonAndLatEqualZero Error", 0, 0,  &exceptions.InvalidLocationError{}},
+		{"GeoLocationWithLonAndLatNotZero Nil", -23.502555, -46.716542,nil},
+		{"GeoLocationWithOnlyLonEqualZero Nil", -23.502555, 0,nil},
+		{"GeoLocationWithOnlyLonEqualZero Nil", 0, -46.716542,nil},
 	}
 
 	for _, tt := range tests {
@@ -50,22 +50,22 @@ func TestRentalAndSale(t *testing.T){
 		isZapBoudingBox bool
 		expected string
 	}{
-		{"Rental_TotalPrice_OutOfBoudingBox_ZapAndVivaReal", "RENTAL", "3500", "", "", 0, false, "zap viva-real"},
-		{"Rental_TotalPrice_OutOfBoudingBox_OnlyZap", "RENTAL", "6000", "", "", 0, false,"zap"},
-		{"Rental_TotalPrice_OutOfBoudingBox_OnlyVivaReal", "RENTAL", "3499", "", "", 0, false,"viva-real"},
-		{"Rental_TotalPrice50PercentBigger_InBoudingBox_ZapAndVivaReal", "RENTAL", "6000", "", "", 0, true,"zap viva-real"},
-		{"Rental_TotalPrice50PercentBigger_InBoudingBox_OnlyZap", "RENTAL", "6001", "", "", 0, true,"zap"},
-		{"Rental_MonthlyCondoFeeBiggerThen30Percent_InBoudingBox_OnlyZap", "RENTAL", "6000", "1900", "4100", 0, true,"zap"},
-		{"Rental_MonthlyCondoFeeLowerThen30Percent_InBoudingBox_ZapAndVivaReal", "RENTAL", "6000", "500", "5500", 0, true,"zap viva-real"},
-		{"Rental_MonthlyCondoFeeLowerThen30Percent_OutBoudingBox_ZapAndVivaReal", "RENTAL", "3612", "812", "2800", 0, false,"zap viva-real"},
-		{"Rental_MonthlyCondoFeeBiggerThen30Percent_OutBoudingBox_ZapAndVivaReal", "RENTAL", "4000", "1200", "2800", 0, false,"zap"},
-		{"Rental_MonthlyCondoNotANumber_OutOfBoudingBox_None", "RENTAL", "3100", "abc", "", 0, false,"viva-real"},
-		{"Sale_Price_OutOfBoudingBox_ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
-		{"Sale_Price_OutOfBoudingBox_WithNoValidUsableAreas_ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
-		{"Sale_Price_OutOfBoudingBox_WithUsableAreasLowerThanMinimum_OnlyVivaReal", "SALE", "", "", "600000", 1200,false,"viva-real"},
-		{"Sale_Price_InBoudingBox_WithUsableAreasBiggerThanMinimum_OnlyZap", "SALE", "", "", "900000", 200,true,"zap"},
-		{"Sale_Price_InBoudingBox_WithUsableAreasLowerThanMinimum_None", "SALE", "", "", "900000", 290,true,""},
-		{"Sale_Price_InBoudingBox_OnlyVivaReal", "SALE", "", "", "400000", 20,true,"viva-real"},
+		{"Rental_TotalPrice_OutOfBoudingBox ZapAndVivaReal", "RENTAL", "3500", "", "", 0, false, "zap viva-real"},
+		{"Rental TotalPrice OutOfBoudingBox OnlyZap", "RENTAL", "6000", "", "", 0, false,"zap"},
+		{"Rental TotalPrice OutOfBoudingBox OnlyVivaReal", "RENTAL", "3499", "", "", 0, false,"viva-real"},
+		{"Rental TotalPrice50PercentBigger InBoudingBox ZapAndVivaReal", "RENTAL", "6000", "", "", 0, true,"zap viva-real"},
+		{"Rental TotalPrice50PercentBigger InBoudingBox OnlyZap", "RENTAL", "6001", "", "", 0, true,"zap"},
+		{"Rental MonthlyCondoFeeBiggerThen30Percent InBoudingBox OnlyZap", "RENTAL", "6000", "1900", "4100", 0, true,"zap"},
+		{"Rental MonthlyCondoFeeLowerThen30Percent InBoudingBox ZapAndVivaReal", "RENTAL", "6000", "500", "5500", 0, true,"zap viva-real"},
+		{"Rental MonthlyCondoFeeLowerThen30Percent OutBoudingBox ZapAndVivaReal", "RENTAL", "3612", "812", "2800", 0, false,"zap viva-real"},
+		{"Rental MonthlyCondoFeeBiggerThen30Percent OutBoudingBox ZapAndVivaReal", "RENTAL", "4000", "1200", "2800", 0, false,"zap"},
+		{"Rental MonthlyCondoNotANumber OutOfBoudingBox None", "RENTAL", "3100", "abc", "", 0, false,"viva-real"},
+		{"Sale Price OutOfBoudingBox ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
+		{"Sale Price OutOfBoudingBox WithNoValidUsableAreas ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
+		{"Sale Price OutOfBoudingBox WithUsableAreasLowerThanMinimum OnlyVivaReal", "SALE", "", "", "600000", 1200,false,"viva-real"},
+		{"Sale Price InBoudingBox WithUsableAreasBiggerThanMinimum OnlyZap", "SALE", "", "", "900000", 200,true,"zap"},
+		{"Sale Price InBoudingBox WithUsableAreasLowerThanMinimum None", "SALE", "", "", "900000", 290,true,""},
+		{"Sale Price InBoudingBox OnlyVivaReal", "SALE", "", "", "400000", 20,true,"viva-real"},
 	}
 
 	for _, tt := range tests {
