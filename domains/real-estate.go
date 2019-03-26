@@ -6,19 +6,19 @@ import (
 )
 
 type RealEstate struct {
-	UsableAreas   int          `json:"usableAreas"`
-	ListingType   string       `json:"listingType"`
-	CreatedAt     time.Time    `json:"createdAt"`
-	ListingStatus string       `json:"listingStatus"`
-	ID            string       `json:"id"`
-	ParkingSpaces int          `json:"parkingSpaces"`
-	UpdatedAt     time.Time    `json:"updatedAt"`
-	Owner         bool         `json:"owner"`
-	Images        []string     `json:"images"`
-	Bathrooms     int          `json:"bathrooms"`
-	Address       Address      `json:"address"`
-	Bedrooms      int          `json:"bedrooms"`
-	PricingInfos  PricingInfos `json:"pricingInfos"`
+	UsableAreas   int          `json:"usableAreas,omitempty"`
+	ListingType   string       `json:"listingType,omitempty"`
+	CreatedAt     time.Time    `json:"createdAt,omitempty"`
+	ListingStatus string       `json:"listingStatus,omitempty"`
+	ID            string       `json:"id,omitempty"`
+	ParkingSpaces int          `json:"parkingSpaces,omitempty"`
+	UpdatedAt     time.Time    `json:"updatedAt,omitempty"`
+	Owner         bool         `json:"owner,omitempty"`
+	Images        []string     `json:"images,omitempty"`
+	Bathrooms     int          `json:"bathrooms,omitempty"`
+	Address       Address      `json:"address,omitempty"`
+	Bedrooms      int          `json:"bedrooms,omitempty"`
+	PricingInfos  PricingInfos `json:"pricingInfos,omitempty"`
 }
 
 type store = string

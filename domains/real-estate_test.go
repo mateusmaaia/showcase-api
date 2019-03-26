@@ -1,145 +1,91 @@
 package domains
 
 import (
+	"github.com/mateusmaaia/showcase-api/domains/exceptions"
+	"reflect"
+	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-var locationOutOfBoundingBox = Address{GeoLocation: GeoLocation{Location: Location{Lat: 0, Lon: -47.693419}}}
 
-var locationInBoundingBox = Address{GeoLocation: GeoLocation{Location: Location{Lat: -23.568704, Lon: -46.693419}}}
+func TestLocation(t *testing.T) {
+	tests := []struct{
+		name string
+		lat float64
+		lon float64
+		expected error
+	}{
+		{"GeoLocationWithLonAndLatEqualZero_Error", 0, 0,  &exceptions.InvalidLocationError{}},
+		{"GeoLocationWithLonAndLatNotZero_Nil", -23.502555, -46.716542,nil},
+		{"GeoLocationWithOnlyLonEqualZero_Nil", -23.502555, 0,nil},
+		{"GeoLocationWithOnlyLonEqualZero_Nil", 0, -46.716542,nil},
+	}
 
-// Location
-func TestValidateGeoLocationWithLonAndLatEqualZero(t *testing.T) {
-	invalidLocation := Location{Lat: 0, Lon: 0}
-	realEstate := RealEstate{Address: Address{GeoLocation: GeoLocation{Location: invalidLocation}}}
-	assert.Error(t, realEstate.Validate())
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			invalidLocation := Location{Lat: tt.lat, Lon: tt.lon}
+			realEstate := RealEstate{Address: Address{GeoLocation: GeoLocation{Location: invalidLocation}}}
+			got := realEstate.Validate()
+
+			if reflect.TypeOf(got) != reflect.TypeOf(tt.expected) {
+				t.Errorf("Type of realEstate.Validate() = %v, expected %v", reflect.TypeOf(got), reflect.TypeOf(tt.expected))
+			}
+		})
+	}
+
 }
 
-func TestValidateGeoLocationWithLonAndLatNotZero(t *testing.T) {
-	invalidLocation := Location{Lat: -23.502555, Lon: -46.716542}
-	realEstate := RealEstate{Address: Address{GeoLocation: GeoLocation{Location: invalidLocation}}}
-	assert.Nil(t, realEstate.Validate())
-}
+func TestRentalAndSale(t *testing.T){
 
-func TestValidateGeoLocationWithOnlyLonEqualZero(t *testing.T) {
-	invalidLocation := Location{Lat: -23.502555, Lon: 0}
-	realEstate := RealEstate{Address: Address{GeoLocation: GeoLocation{Location: invalidLocation}}}
-	assert.Nil(t, realEstate.Validate())
-}
+	locationOutOfBoundingBox := Address{GeoLocation: GeoLocation{Location: Location{Lat: 0, Lon: -47.693419}}}
+	locationInBoundingBox := Address{GeoLocation: GeoLocation{Location: Location{Lat: -23.568704, Lon: -46.693419}}}
 
-func TestValidateGeoLocationWithOnlyLatEqualZero(t *testing.T) {
-	invalidLocation := Location{Lat: 0, Lon: -46.716542}
-	realEstate := RealEstate{Address: Address{GeoLocation: GeoLocation{Location: invalidLocation}}}
-	assert.Nil(t, realEstate.Validate())
-}
+	tests := []struct {
+		name string
+		businessType string
+		rentalTotalPrice string
+		monthlyCondoFee string
+		price string
+		usableAreas int
+		isZapBoudingBox bool
+		expected string
+	}{
+		{"Rental_TotalPrice_OutOfBoudingBox_ZapAndVivaReal", "RENTAL", "3500", "", "", 0, false, "zap viva-real"},
+		{"Rental_TotalPrice_OutOfBoudingBox_OnlyZap", "RENTAL", "6000", "", "", 0, false,"zap"},
+		{"Rental_TotalPrice_OutOfBoudingBox_OnlyVivaReal", "RENTAL", "3499", "", "", 0, false,"viva-real"},
+		{"Rental_TotalPrice50PercentBigger_InBoudingBox_ZapAndVivaReal", "RENTAL", "6000", "", "", 0, true,"zap viva-real"},
+		{"Rental_TotalPrice50PercentBigger_InBoudingBox_OnlyZap", "RENTAL", "6001", "", "", 0, true,"zap"},
+		{"Rental_MonthlyCondoFeeBiggerThen30Percent_InBoudingBox_OnlyZap", "RENTAL", "6000", "1900", "4100", 0, true,"zap"},
+		{"Rental_MonthlyCondoFeeLowerThen30Percent_InBoudingBox_ZapAndVivaReal", "RENTAL", "6000", "500", "5500", 0, true,"zap viva-real"},
+		{"Rental_MonthlyCondoFeeLowerThen30Percent_OutBoudingBox_ZapAndVivaReal", "RENTAL", "3612", "812", "2800", 0, false,"zap viva-real"},
+		{"Rental_MonthlyCondoFeeBiggerThen30Percent_OutBoudingBox_ZapAndVivaReal", "RENTAL", "4000", "1200", "2800", 0, false,"zap"},
+		{"Rental_MonthlyCondoNotANumber_OutOfBoudingBox_None", "RENTAL", "3100", "abc", "", 0, false,"viva-real"},
+		{"Sale_Price_OutOfBoudingBox_ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
+		{"Sale_Price_OutOfBoudingBox_WithNoValidUsableAreas_ZapAndVivaReal", "SALE", "", "", "600000", 0,false,"zap viva-real"},
+		{"Sale_Price_OutOfBoudingBox_WithUsableAreasLowerThanMinimum_OnlyVivaReal", "SALE", "", "", "600000", 1200,false,"viva-real"},
+		{"Sale_Price_InBoudingBox_WithUsableAreasBiggerThanMinimum_OnlyZap", "SALE", "", "", "900000", 200,true,"zap"},
+		{"Sale_Price_InBoudingBox_WithUsableAreasLowerThanMinimum_None", "SALE", "", "", "900000", 290,true,""},
+		{"Sale_Price_InBoudingBox_OnlyVivaReal", "SALE", "", "", "400000", 20,true,"viva-real"},
+	}
 
-// Rental
-func TestValidateStoreRentalTotalPriceOutOfBoudingBoxZapAndVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "3500"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-func TestValidateStoreRentalTotalPriceOutOfBoudingBoxOnlyZap(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "6000"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
+			pricingInfos := PricingInfos{BusinessType: tt.businessType, RentalTotalPrice: tt.rentalTotalPrice, MonthlyCondoFee: tt.monthlyCondoFee, Price: tt.price}
 
-func TestValidateStoreRentalTotalPriceOutOfBoudingBoxOnlyVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "3499"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "zap")
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-}
+			location := locationOutOfBoundingBox
 
-func TestValidateStoreRentalTotalPrice50PercentBiggerInBoudingBoxZapAndVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "6000"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
+			if tt.isZapBoudingBox {
+				location = locationInBoundingBox
+			}
 
-func TestValidateStoreRentalTotalPrice50PercentBiggerInBoudingBoxOnlyZap(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "6001"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
+			realEstate := RealEstate{PricingInfos: pricingInfos, Address:location, UsableAreas: tt.usableAreas}
 
-func TestValidateStoreMonthlyCondoFeeBiggerThen30PercentInBoudingBox(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "6000", MonthlyCondoFee: "1900", Price: "4100"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-}
+			got := realEstate.DefineStoreNames()
 
-func TestValidateStoreMonthlyCondoFeeLowerThen30PercentInBoudingBox(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "6000", MonthlyCondoFee: "500", Price: "5500"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-}
-
-func TestValidateStoreMonthlyCondoFeeLowerThen30PercentOutOfBoudingBox(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "3612", MonthlyCondoFee: "812", Price: "2800"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-}
-
-func TestValidateStoreMonthlyCondoBiggerThen30PercentOutOfBoudingBox(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "4000", MonthlyCondoFee: "1200", Price: "2800"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-}
-
-func TestValidateStoreMonthlyCondoNotANumberOutOfBoudingBox(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "RENTAL", RentalTotalPrice: "3100", MonthlyCondoFee: "abc"}
-	realEstate := RealEstate{PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-}
-
-// Sale
-func TestValidateStoreSalePriceOutOfBoudingBoxZapAndVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "600000"}
-	realEstate := RealEstate{UsableAreas: 80, PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
-
-func TestValidateStoreSalePriceOutOfBoudingBoxWithNoValidUsableAreasZapAndVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "600000"}
-	realEstate := RealEstate{UsableAreas: 0, PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
-
-func TestValidateStoreSalePriceOutOfBoudingBoxWithUsableAreasLowerThanMinimumOnlyVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "600000"}
-	realEstate := RealEstate{UsableAreas: 1200, PricingInfos: pricingInfos, Address: locationOutOfBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.NotContains(t, realEstate.DefineStoreNames(), "zap")
-}
-
-func TestValidateStoreSalePriceInBoudingBoxWithUsableAreasBiggerThanMinimumOnlyZap(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "900000"}
-	realEstate := RealEstate{UsableAreas: 200, PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.Contains(t, realEstate.DefineStoreNames(), "zap")
-}
-
-func TestValidateStoreSalePriceInBoudingBoxWithUsableAreasLowerThanMinimum(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "900000"}
-	realEstate := RealEstate{UsableAreas: 290, PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.NotContains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.NotContains(t, realEstate.DefineStoreNames(), "zap")
-}
-
-func TestValidateStoreSalePriceInBoudingBoxOnlyVivaReal(t *testing.T) {
-	pricingInfos := PricingInfos{BusinessType: "SALE", Price: "400000"}
-	realEstate := RealEstate{UsableAreas: 20, PricingInfos: pricingInfos, Address: locationInBoundingBox}
-	assert.Contains(t, realEstate.DefineStoreNames(), "viva-real")
-	assert.NotContains(t, realEstate.DefineStoreNames(), "zap")
+			if strings.Join(got, " ") != tt.expected {
+				t.Errorf("DefineStoreNames() = %v, expected %v", got, tt.expected)
+			}
+		})
+	}
 }
